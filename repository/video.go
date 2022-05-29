@@ -32,3 +32,7 @@ func (vr *VideoRepository) FindByID(id uint) (*models.Video, error) {
 func (vr *VideoRepository) Update(video *models.Video) error {
 	return vr.db.Save(video).Error
 }
+
+func (vr *VideoRepository) Delete(video *models.Video) error {
+	return vr.db.Delete(video).Error
+}

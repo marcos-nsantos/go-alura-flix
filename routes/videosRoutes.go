@@ -10,4 +10,5 @@ func addVideoRoutes(rg *gin.RouterGroup) {
 	rg.GET("/", videosController.ShowAllVideos)
 	rg.GET("/:id", videosController.ShowVideo)
 	rg.PUT("/:id", videosController.UpdateVideo)
+	rg.DELETE("/:id", videosController.DeleteVideo)
 }
