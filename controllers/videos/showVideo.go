@@ -13,6 +13,7 @@ func ShowVideo(c *gin.Context) {
 	IDUint, err := strconv.ParseUint(IDVideo, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
 	}
 
 	db, err := database.Connect()
