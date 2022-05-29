@@ -7,4 +7,5 @@ import (
 
 func addCategoriaRoutes(rg *gin.RouterGroup) {
 	rg.POST("/", categoriaControllers.CreateCategoria)
+	rg.GET("/", categoriaControllers.ShowAllCategorias)
 }
