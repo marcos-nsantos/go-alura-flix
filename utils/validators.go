@@ -21,6 +21,8 @@ func getErrValidationMessage(fe validator.FieldError) string {
 		return fmt.Sprintf("%s deve ser uma URL válida", fe.Field())
 	case "notblank":
 		return fmt.Sprintf("%s não pode ser vazio", fe.Field())
+	case "iscolor":
+		return fmt.Sprintf("%s deve estar no formato hexadecimal, RGB, RGBA, HSL ou HSLA", fe.Field())
 	}
 	return fmt.Sprintf("%s é inválido", fe.Field())
 }
