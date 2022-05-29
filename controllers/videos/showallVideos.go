@@ -11,11 +11,6 @@ func ShowAllVideos(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	}
-
-	db, err = database.Connect()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
