@@ -25,7 +25,7 @@ func CreateCategoria(c *gin.Context) {
 	}
 
 	categoriaRepository := repository.NewCategoriaRepository(db)
-	err = categoriaRepository.Create(&categoria)
+	err = categoriaRepository.CreateCategoria(&categoria)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
