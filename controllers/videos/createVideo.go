@@ -25,7 +25,7 @@ func CreateVideo(c *gin.Context) {
 	}
 
 	videoRepository := repository.NewVideoRepository(db)
-	if err := videoRepository.Create(&video); err != nil {
+	if err := videoRepository.CreateVideo(&video); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

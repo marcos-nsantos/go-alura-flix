@@ -27,12 +27,12 @@ func DeleteVideo(c *gin.Context) {
 	video.ID = uint(IDUint)
 
 	videoRepository := repository.NewVideoRepository(db)
-	if _, err := videoRepository.FindByID(video.ID); err != nil {
+	if _, err := videoRepository.FindVideoByID(video.ID); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Video not found"})
 		return
 	}
 
-	err = videoRepository.Delete(&video)
+	err = videoRepository.DeleteVideo(&video)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

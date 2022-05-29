@@ -15,7 +15,7 @@ func ShowAllVideos(c *gin.Context) {
 	}
 
 	videoRepository := repository.NewVideoRepository(db)
-	videos, err := videoRepository.FindAll()
+	videos, err := videoRepository.FindAllVideos()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -23,7 +23,7 @@ func ShowVideo(c *gin.Context) {
 	}
 
 	videoRepository := repository.NewVideoRepository(db)
-	video, err := videoRepository.FindByID(uint(IDUint))
+	video, err := videoRepository.FindVideoByID(uint(IDUint))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Video not found"})
 		return
