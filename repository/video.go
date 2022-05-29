@@ -22,3 +22,9 @@ func (vr *VideoRepository) FindAll() ([]*models.Video, error) {
 	err := vr.db.Find(&videos).Error
 	return videos, err
 }
+
+func (vr *VideoRepository) FindByID(id uint) (*models.Video, error) {
+	var video models.Video
+	err := vr.db.First(&video, id).Error
+	return &video, err
+}
