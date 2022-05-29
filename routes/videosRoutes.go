@@ -8,4 +8,5 @@ import (
 func addVideoRoutes(rg *gin.RouterGroup) {
 	rg.POST("/", videos_controller.CreateVideo)
 	rg.GET("/", videos_controller.ShowAllVideos)
+	rg.GET("/:id", videos_controller.ShowVideo)
 }
