@@ -11,6 +11,9 @@ func HandleRequests() {
 	video := r.Group("/videos")
 	addVideoRoutes(video)
 
+	categoria := r.Group("/categorias")
+	addCategoriaRoutes(categoria)
+
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
