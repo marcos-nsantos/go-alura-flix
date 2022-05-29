@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Video struct {
 	gorm.Model
-	Titulo    string `json:"titulo" binding:"required"`
-	Descricao string `json:"descricao" binding:"required"`
-	URL       string `json:"url" binding:"required,url"`
+	Titulo    string `json:"titulo" binding:"required,notblank"`
+	Descricao string `json:"descricao" binding:"required,notblank"`
+	URL       string `json:"url" binding:"required,notblank,url"`
 }
