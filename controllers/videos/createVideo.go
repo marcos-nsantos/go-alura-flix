@@ -5,6 +5,7 @@ import (
 	"github.com/marcos-nsantos/alura-flix/database"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
+	"github.com/marcos-nsantos/alura-flix/utils"
 	"net/http"
 )
 
@@ -12,7 +13,8 @@ func CreateVideo(c *gin.Context) {
 	var video models.Video
 
 	if err := c.BindJSON(&video); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		errValidationMessagesResponse := utils.GetErrValidationMessageResponse(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": errValidationMessagesResponse})
 		return
 	}
 
