@@ -1,4 +1,4 @@
-package videos_controller
+package videoControllers
 
 import (
 	"github.com/gin-gonic/gin"
