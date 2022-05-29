@@ -28,3 +28,7 @@ func (vr *VideoRepository) FindByID(id uint) (*models.Video, error) {
 	err := vr.db.First(&video, id).Error
 	return &video, err
 }
+
+func (vr *VideoRepository) Update(video *models.Video) error {
+	return vr.db.Save(video).Error
+}
