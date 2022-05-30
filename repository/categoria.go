@@ -22,3 +22,9 @@ func (cr CategoriaRepository) FindAll() ([]*models.Categoria, error) {
 	err := cr.db.Find(&categorias).Error
 	return categorias, err
 }
+
+func (cr CategoriaRepository) FindByID(id uint) (*models.Categoria, error) {
+	var categoria models.Categoria
+	err := cr.db.First(&categoria, id).Error
+	return &categoria, err
+}
