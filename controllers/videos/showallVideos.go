@@ -3,22 +3,35 @@ package videoControllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/marcos-nsantos/alura-flix/database"
+	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
 	"net/http"
 )
 
 func ShowAllVideos(c *gin.Context) {
+	search := c.Query("search")
+
 	db, err := database.Connect()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	var videos *[]models.Video
 	videoRepository := repository.NewVideoRepository(db)
-	videos, err := videoRepository.FindAllVideos()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+
+	if search != "" {
+		videos, err = videoRepository.FindAllVideosByTitle(search)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		videos, err = videoRepository.FindAllVideos()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, videos)
