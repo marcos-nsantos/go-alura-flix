@@ -28,3 +28,7 @@ func (cr CategoriaRepository) FindByID(id uint) (*models.Categoria, error) {
 	err := cr.db.First(&categoria, id).Error
 	return &categoria, err
 }
+
+func (cr CategoriaRepository) UpdateCategoria(categoria *models.Categoria) error {
+	return cr.db.Save(categoria).Error
+}
