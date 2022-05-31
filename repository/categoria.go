@@ -36,3 +36,9 @@ func (cr CategoriaRepository) UpdateCategoria(categoria *models.Categoria) error
 func (cr CategoriaRepository) DeleteCategoria(categoria *models.Categoria) error {
 	return cr.db.Delete(categoria).Error
 }
+
+func (cr CategoriaRepository) VideosBelongsToCategoria(IDCategoria uint) ([]*models.Video, error) {
+	var videos []*models.Video
+	err := cr.db.Model(&models.Video{}).Where("categoria_id = ?", IDCategoria).Find(&videos).Error
+	return videos, err
+}
