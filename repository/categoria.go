@@ -32,3 +32,7 @@ func (cr CategoriaRepository) FindByID(id uint) (*models.Categoria, error) {
 func (cr CategoriaRepository) UpdateCategoria(categoria *models.Categoria) error {
 	return cr.db.Save(categoria).Error
 }
+
+func (cr CategoriaRepository) DeleteCategoria(categoria *models.Categoria) error {
+	return cr.db.Delete(categoria).Error
+}
