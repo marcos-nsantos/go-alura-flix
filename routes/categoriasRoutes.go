@@ -11,4 +11,5 @@ func addCategoriaRoutes(rg *gin.RouterGroup) {
 	rg.GET("/:id", categoriaControllers.ShowCategoria)
 	rg.PUT("/:id", categoriaControllers.UpdateCategoria)
 	rg.DELETE("/:id", categoriaControllers.DeleteCategoria)
+	rg.GET("/:id/videos", categoriaControllers.ShowVideosByCategoria)
 }
