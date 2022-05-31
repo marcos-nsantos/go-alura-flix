@@ -18,6 +18,11 @@ func CreateVideo(c *gin.Context) {
 		return
 	}
 
+	const categoriaLivre = 1
+	if video.CategoriaID == 0 {
+		video.CategoriaID = categoriaLivre
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
