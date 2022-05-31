@@ -6,4 +6,5 @@ type Categoria struct {
 	gorm.Model
 	Titulo string `json:"titulo" binding:"required,notblank"`
 	Cor    string `json:"cor" binding:"required,notblank,iscolor"`
+	Video  *Video `json:"video,omitempty"`
 }
