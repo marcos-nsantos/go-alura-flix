@@ -3,6 +3,7 @@ package videoControllers_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/marcos-nsantos/alura-flix/database"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/routes"
@@ -43,6 +44,12 @@ func videoMock() []models.Video {
 
 func deleteVideo(db *gorm.DB, id uint) {
 	db.Delete(&models.Video{}, id)
+}
+
+func getLastInsertedID(db *gorm.DB) uint {
+	var video models.Video
+	db.Last(&video)
+	return video.ID
 }
 
 func TestCreateVideo(t *testing.T) {
@@ -116,4 +123,53 @@ func TestShowAllVideos(t *testing.T) {
 			deleteVideo(db, video.ID)
 		}
 	}()
+}
+
+func TestShowVideo(t *testing.T) {
+	r := routes.HandleRequests()
+
+	videoMock := videoMock()
+	videoJSONMock, _ := json.Marshal(videoMock[2])
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/videos/", bytes.NewBuffer(videoJSONMock))
+	r.ServeHTTP(w, req)
+
+	var video models.Video
+	json.Unmarshal(w.Body.Bytes(), &video)
+
+	db, _ := database.Connect()
+	lastInsertedID := getLastInsertedID(db)
+	defer deleteVideo(db, lastInsertedID)
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("/videos/%d", video.ID), nil)
+	r.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("Status code expected: 200, got: %d", w.Code)
+	}
+
+	var videoReturned models.Video
+	json.Unmarshal(w.Body.Bytes(), &videoReturned)
+
+	if videoReturned.ID != video.ID {
+		t.Errorf("ID expected: %d, got: %d", video.ID, videoReturned.ID)
+	}
+
+	if videoReturned.Titulo != video.Titulo {
+		t.Errorf("Titulo expected: %s, got: %s", video.Titulo, videoReturned.Titulo)
+	}
+
+	if videoReturned.Descricao != video.Descricao {
+		t.Errorf("Descrição expected: %s, got: %s", video.Descricao, videoReturned.Descricao)
+	}
+
+	if videoReturned.URL != video.URL {
+		t.Errorf("URL expected: %s, got: %s", video.URL, videoReturned.URL)
+	}
+
+	if videoReturned.CategoriaID != video.CategoriaID {
+		t.Errorf("CategoriaID expected: %d, got: %d", video.CategoriaID, videoReturned.CategoriaID)
+	}
 }
