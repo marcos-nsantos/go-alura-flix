@@ -229,3 +229,29 @@ func TestUpdateVideo(t *testing.T) {
 		t.Errorf("CategoriaID expected: %d, got: %d", video.CategoriaID, videoReturned.CategoriaID)
 	}
 }
+
+func TestDeleteVideo(t *testing.T) {
+	r := routes.HandleRequests()
+
+	videoMock := videoMock()
+	videoJSONMock, _ := json.Marshal(videoMock[2])
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/videos/", bytes.NewBuffer(videoJSONMock))
+	r.ServeHTTP(w, req)
+
+	var video models.Video
+	json.Unmarshal(w.Body.Bytes(), &video)
+
+	db, _ := database.Connect()
+	lastInsertedID := getLastInsertedID(db)
+	defer deleteVideo(db, lastInsertedID)
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodDelete, fmt.Sprintf("/videos/%d", lastInsertedID), nil)
+	r.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("Status code expected: 200, got: %d", w.Code)
+	}
+}
