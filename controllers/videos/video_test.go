@@ -173,3 +173,59 @@ func TestShowVideo(t *testing.T) {
 		t.Errorf("CategoriaID expected: %d, got: %d", video.CategoriaID, videoReturned.CategoriaID)
 	}
 }
+
+func TestUpdateVideo(t *testing.T) {
+	r := routes.HandleRequests()
+
+	videoMock := videoMock()
+	videoJSONMock, _ := json.Marshal(videoMock[2])
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/videos/", bytes.NewBuffer(videoJSONMock))
+	r.ServeHTTP(w, req)
+
+	var video models.Video
+	json.Unmarshal(w.Body.Bytes(), &video)
+
+	db, _ := database.Connect()
+	lastInsertedID := getLastInsertedID(db)
+	defer deleteVideo(db, lastInsertedID)
+
+	video.Titulo = "Titulo de Teste"
+	video.Descricao = "Descrição de teste"
+	video.URL = "https://www.teste.com/video.mp4"
+	video.CategoriaID = 1
+
+	videoJSONMock, _ = json.Marshal(video)
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodPut, fmt.Sprintf("/videos/%d", lastInsertedID), bytes.NewBuffer(videoJSONMock))
+	r.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("Status code expected: 200, got: %d", w.Code)
+	}
+
+	var videoReturned models.Video
+	json.Unmarshal(w.Body.Bytes(), &videoReturned)
+
+	if videoReturned.ID != video.ID {
+		t.Errorf("ID expected: %d, got: %d", video.ID, videoReturned.ID)
+	}
+
+	if videoReturned.Titulo != video.Titulo {
+		t.Errorf("Titulo expected: %s, got: %s", video.Titulo, videoReturned.Titulo)
+	}
+
+	if videoReturned.Descricao != video.Descricao {
+		t.Errorf("Descrição expected: %s, got: %s", video.Descricao, videoReturned.Descricao)
+	}
+
+	if videoReturned.URL != video.URL {
+		t.Errorf("URL expected: %s, got: %s", video.URL, videoReturned.URL)
+	}
+
+	if videoReturned.CategoriaID != video.CategoriaID {
+		t.Errorf("CategoriaID expected: %d, got: %d", video.CategoriaID, videoReturned.CategoriaID)
+	}
+}
