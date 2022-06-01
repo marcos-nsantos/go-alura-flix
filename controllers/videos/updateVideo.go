@@ -44,5 +44,5 @@ func UpdateVideo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": "Video updated successfully"})
+	c.JSON(http.StatusOK, video)
 }
