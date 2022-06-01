@@ -13,6 +13,10 @@ import (
 	"testing"
 )
 
+func init() {
+	database.Migrate()
+}
+
 func videoMock() []models.Video {
 	utils.RegisterValidators()
 	video := []models.Video{
@@ -76,4 +80,40 @@ func TestCreateVideo(t *testing.T) {
 	if video.CategoriaID != 1 {
 		t.Errorf("CategoriaID expected: 1, got: %d", video.CategoriaID)
 	}
+}
+
+func TestShowAllVideos(t *testing.T) {
+	r := routes.HandleRequests()
+
+	videoMock := videoMock()
+
+	for _, video := range videoMock {
+		videoJSONMock, _ := json.Marshal(video)
+
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest(http.MethodPost, "/videos/", bytes.NewBuffer(videoJSONMock))
+		r.ServeHTTP(w, req)
+	}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/videos/", nil)
+	r.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("Status code expected: 200, got: %d", w.Code)
+	}
+
+	var videos []models.Video
+	json.Unmarshal(w.Body.Bytes(), &videos)
+
+	if len(videos) != 3 {
+		t.Errorf("Expected 3 videos, got: %d", len(videos))
+	}
+
+	defer func() {
+		db, _ := database.Connect()
+		for _, video := range videos {
+			deleteVideo(db, video.ID)
+		}
+	}()
 }
