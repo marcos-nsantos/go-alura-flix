@@ -3,6 +3,7 @@ package videoControllers_test
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/marcos-nsantos/alura-flix/database"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/routes"
 	"github.com/marcos-nsantos/alura-flix/utils"
@@ -25,6 +26,10 @@ func videoMock() models.Video {
 	return video
 }
 
+func deleteVideo(db *gorm.DB, id uint) {
+	db.Delete(&models.Video{}, id)
+}
+
 func TestCreateVideo(t *testing.T) {
 	r := routes.HandleRequests()
 
@@ -41,6 +46,9 @@ func TestCreateVideo(t *testing.T) {
 
 	var video models.Video
 	json.Unmarshal(w.Body.Bytes(), &video)
+
+	db, _ := database.Connect()
+	defer deleteVideo(db, video.ID)
 
 	if video.Titulo != "Titulo de Teste" {
 		t.Errorf("Titulo expected: Titulo de Teste, got: %s", video.Titulo)
