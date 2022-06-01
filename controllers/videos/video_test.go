@@ -13,14 +13,25 @@ import (
 	"testing"
 )
 
-func videoMock() models.Video {
+func videoMock() []models.Video {
 	utils.RegisterValidators()
-	video := models.Video{
-		Model:       gorm.Model{},
-		CategoriaID: 1,
-		Titulo:      "Titulo de Teste",
-		Descricao:   "Descrição de teste",
-		URL:         "https://www.teste.com/teste.mp4",
+	video := []models.Video{
+		{
+			Titulo:    "Titulo de Teste",
+			Descricao: "Descrição de teste",
+			URL:       "https://www.teste.com/video.mp4",
+		},
+		{
+			CategoriaID: 1,
+			Titulo:      "Titulo de Teste 2",
+			Descricao:   "Descrição de video 2",
+			URL:         "https://www.teste.com/video2.mp4",
+		},
+		{
+			Titulo:    "Titulo de Teste 3",
+			Descricao: "Descrição de teste 3",
+			URL:       "https://www.teste.com/video3.mp4",
+		},
 	}
 
 	return video
@@ -34,10 +45,10 @@ func TestCreateVideo(t *testing.T) {
 	r := routes.HandleRequests()
 
 	videoMock := videoMock()
-	videoJSONMock, _ := json.Marshal(videoMock)
+	videoJSONMock, _ := json.Marshal(videoMock[0])
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/videos/", bytes.NewBuffer(videoJSONMock))
+	req, _ := http.NewRequest(http.MethodPost, "/videos/", bytes.NewBuffer(videoJSONMock))
 	r.ServeHTTP(w, req)
 
 	if w.Code != 201 {
@@ -58,7 +69,7 @@ func TestCreateVideo(t *testing.T) {
 		t.Errorf("Descrição expected: Descrição de teste, got: %s", video.Descricao)
 	}
 
-	if video.URL != "https://www.teste.com/teste.mp4" {
+	if video.URL != "https://www.teste.com/video.mp4" {
 		t.Errorf("URL expected: https://www.teste.com/teste.mp4, got: %s", video.URL)
 	}
 
