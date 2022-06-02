@@ -92,3 +92,47 @@ func TestCreateCategoria(t *testing.T) {
 		t.Errorf("Cor should be %s, was: %s", categorias[0].Cor, categoria.Cor)
 	}
 }
+
+func TestShowAllCategorias(t *testing.T) {
+	r := routes.HandleRequests()
+
+	categoriasMock := categoriaMock()
+
+	for _, categoria := range categoriasMock {
+		categoriaJSONMock, _ := json.Marshal(categoria)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest(http.MethodPost, "/categorias/", bytes.NewBuffer(categoriaJSONMock))
+		r.ServeHTTP(w, req)
+	}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/categorias/", nil)
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Status code should be 200, was: %d", w.Code)
+	}
+
+	var categorias []models.Categoria
+	json.NewDecoder(w.Body).Decode(&categorias)
+
+	defer func() {
+		db, _ := database.Connect()
+		for _, categoria := range categorias {
+			deleteCategoria(db, categoria.ID)
+		}
+	}()
+
+	if len(categorias) != len(categoriasMock) {
+		t.Errorf("Should be %d, was: %d", len(categoriasMock), len(categorias))
+	}
+
+	for index, categoria := range categorias {
+		if categoria.Titulo != categoriasMock[index].Titulo {
+			t.Errorf("Titulo should be %s, was: %s", categoriasMock[index].Titulo, categoria.Titulo)
+		}
+		if categoria.Cor != categoriasMock[index].Cor {
+			t.Errorf("Cor should be %s, was: %s", categoriasMock[index].Cor, categoria.Cor)
+		}
+	}
+}
