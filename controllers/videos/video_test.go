@@ -125,6 +125,56 @@ func TestShowAllVideos(t *testing.T) {
 	}()
 }
 
+func TestShowAllVideosSearchingByTitle(t *testing.T) {
+	r := routes.HandleRequests()
+
+	videoMock := videoMock()
+	for _, video := range videoMock {
+		videoJSONMock, _ := json.Marshal(video)
+
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest(http.MethodPost, "/videos/", bytes.NewBuffer(videoJSONMock))
+		r.ServeHTTP(w, req)
+	}
+
+	w := httptest.NewRecorder()
+	query := "?search=Titulo de Teste"
+	req, _ := http.NewRequest(http.MethodGet, "/videos/"+query, nil)
+	r.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("Status code expected: 200, got: %d", w.Code)
+	}
+
+	var videos []models.Video
+	json.Unmarshal(w.Body.Bytes(), &videos)
+
+	defer func() {
+		db, _ := database.Connect()
+		for _, video := range videos {
+			deleteVideo(db, video.ID)
+		}
+	}()
+
+	if len(videos) != len(videoMock) {
+		t.Errorf("Expected: %d, got: %d", len(videoMock), len(videos))
+	}
+
+	for index, video := range videoMock {
+		if video.Titulo != videoMock[index].Titulo {
+			t.Errorf("Titulo expected: %s, got: %s", video.Titulo, videoMock[index].Titulo)
+		}
+
+		if video.Descricao != videoMock[index].Descricao {
+			t.Errorf("Descrição expected: %s, got: %s", video.Descricao, videoMock[index].Descricao)
+		}
+
+		if video.URL != videoMock[index].URL {
+			t.Errorf("URL expected: %s, got: %s", video.URL, videoMock[index].URL)
+		}
+	}
+}
+
 func TestShowVideo(t *testing.T) {
 	r := routes.HandleRequests()
 
