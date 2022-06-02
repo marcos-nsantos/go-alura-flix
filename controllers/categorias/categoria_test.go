@@ -136,3 +136,36 @@ func TestShowAllCategorias(t *testing.T) {
 		}
 	}
 }
+
+func TestShowCategoria(t *testing.T) {
+	r := routes.HandleRequests()
+
+	categoriasMock := categoriaMock()
+
+	categoriaMock := categoriasMock[0]
+	categoriaJSONMock, _ := json.Marshal(categoriaMock)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/categorias/", bytes.NewBuffer(categoriaJSONMock))
+	r.ServeHTTP(w, req)
+
+	defer func() {
+		db, _ := database.Connect()
+		defer deleteCategoria(db, getLastInsertedID(db))
+	}()
+
+	if w.Code != http.StatusCreated {
+		t.Errorf("Status code should be 201, was: %d", w.Code)
+	}
+
+	var categoria models.Categoria
+	json.NewDecoder(w.Body).Decode(&categoria)
+
+	if categoria.Titulo != categoriaMock.Titulo {
+		t.Errorf("Titulo should be %s, was: %s", categoriaMock.Titulo, categoria.Titulo)
+	}
+
+	if categoria.Cor != categoriaMock.Cor {
+		t.Errorf("Cor should be %s, was: %s", categoriaMock.Cor, categoria.Cor)
+	}
+}
