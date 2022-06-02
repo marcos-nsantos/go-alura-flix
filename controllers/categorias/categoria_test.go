@@ -3,6 +3,7 @@ package categoriaControllers_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/marcos-nsantos/alura-flix/database"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/routes"
@@ -159,6 +160,49 @@ func TestShowCategoria(t *testing.T) {
 	}
 
 	var categoria models.Categoria
+	json.NewDecoder(w.Body).Decode(&categoria)
+
+	if categoria.Titulo != categoriaMock.Titulo {
+		t.Errorf("Titulo should be %s, was: %s", categoriaMock.Titulo, categoria.Titulo)
+	}
+
+	if categoria.Cor != categoriaMock.Cor {
+		t.Errorf("Cor should be %s, was: %s", categoriaMock.Cor, categoria.Cor)
+	}
+}
+
+func TestUpdateCategoria(t *testing.T) {
+	r := routes.HandleRequests()
+
+	categoriasMock := categoriaMock()
+
+	categoriaMock := categoriasMock[0]
+	categoriaJSONMock, _ := json.Marshal(categoriaMock)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/categorias/", bytes.NewBuffer(categoriaJSONMock))
+	r.ServeHTTP(w, req)
+
+	var categoria models.Categoria
+	json.NewDecoder(w.Body).Decode(&categoria)
+
+	db, _ := database.Connect()
+	lastInsertedID := getLastInsertedID(db)
+	defer deleteCategoria(db, lastInsertedID)
+
+	categoriaMock.Titulo = "Nova Categoria"
+	categoriaMock.Cor = "#964b00"
+
+	categoriaJSONMock, _ = json.Marshal(categoriaMock)
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodPut, fmt.Sprintf("/categorias/%d", lastInsertedID), bytes.NewBuffer(categoriaJSONMock))
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Status code should be 200, was: %d", w.Code)
+	}
+
 	json.NewDecoder(w.Body).Decode(&categoria)
 
 	if categoria.Titulo != categoriaMock.Titulo {
