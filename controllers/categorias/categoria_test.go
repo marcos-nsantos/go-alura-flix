@@ -213,3 +213,31 @@ func TestUpdateCategoria(t *testing.T) {
 		t.Errorf("Cor should be %s, was: %s", categoriaMock.Cor, categoria.Cor)
 	}
 }
+
+func TestDeleteCategoria(t *testing.T) {
+	r := routes.HandleRequests()
+
+	categoriasMock := categoriaMock()
+
+	categoriaMock := categoriasMock[0]
+	categoriaJSONMock, _ := json.Marshal(categoriaMock)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/categorias/", bytes.NewBuffer(categoriaJSONMock))
+	r.ServeHTTP(w, req)
+
+	var categoria models.Categoria
+	json.NewDecoder(w.Body).Decode(&categoria)
+
+	db, _ := database.Connect()
+	lastInsertedID := getLastInsertedID(db)
+	defer deleteCategoria(db, lastInsertedID)
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodDelete, fmt.Sprintf("/categorias/%d", lastInsertedID), nil)
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Status code should be 200, was: %d", w.Code)
+	}
+}
