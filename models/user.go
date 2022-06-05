@@ -31,17 +31,20 @@ type UpdateUser struct {
 	Email string `json:"email" binding:"required,notblank,email"`
 }
 
-func (uc *UserCreation) ToUser() *User {
-	user := &User{
-		Name:     uc.Name,
-		Email:    uc.Email,
-		Password: uc.Password,
-	}
-	return user
+type UpdatePassword struct {
+	Password string `json:"password" binding:"required,notblank"`
 }
 
 func (uc *UserCreation) HashPassword() (string, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(uc.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(passwordHash), nil
+}
+
+func (up *UpdatePassword) HashPassword() (string, error) {
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(up.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
