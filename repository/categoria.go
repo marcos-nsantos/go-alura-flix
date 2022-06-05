@@ -17,9 +17,11 @@ func (cr CategoriaRepository) CreateCategoria(categoria *models.Categoria) error
 	return cr.db.Create(categoria).Error
 }
 
-func (cr CategoriaRepository) FindAll() ([]*models.Categoria, error) {
-	var categorias []*models.Categoria
-	err := cr.db.Find(&categorias).Error
+func (cr CategoriaRepository) FindAll(pagination *models.Pagination) (*[]models.Categoria, error) {
+	var categorias *[]models.Categoria
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuilder := cr.db.Model(&models.Categoria{}).Order("created_at desc")
+	err := queryBuilder.Count(&pagination.TotalRows).Offset(offset).Limit(pagination.Limit).Find(&categorias).Error
 	return categorias, err
 }
 
@@ -37,8 +39,10 @@ func (cr CategoriaRepository) DeleteCategoria(categoria *models.Categoria) error
 	return cr.db.Delete(categoria).Error
 }
 
-func (cr CategoriaRepository) VideosBelongsToCategoria(IDCategoria uint) ([]*models.Video, error) {
-	var videos []*models.Video
-	err := cr.db.Model(&models.Video{}).Where("categoria_id = ?", IDCategoria).Find(&videos).Error
+func (cr CategoriaRepository) VideosBelongsToCategoria(IDCategoria uint, pagination *models.Pagination) (*[]models.Video, error) {
+	var videos *[]models.Video
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuilder := cr.db.Model(&models.Video{}).Where("categoria_id = ?", IDCategoria)
+	err := queryBuilder.Count(&pagination.TotalRows).Offset(offset).Limit(pagination.Limit).Find(&videos).Error
 	return videos, err
 }
