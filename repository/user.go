@@ -17,22 +17,16 @@ func (ur *UserRepository) CreateUser(user *models.User) error {
 	return ur.db.Create(user).Error
 }
 
-func (ur *UserRepository) FindAll(pagination *models.Pagination) (*[]models.User, error) {
-	var users *[]models.User
-	offset := (pagination.Page - 1) * pagination.Limit
-	queryBuilder := ur.db.Model(&models.User{}).Order(pagination.Sort)
-	err := queryBuilder.Count(&pagination.TotalRows).Offset(offset).Limit(pagination.Limit).Find(&users).Error
-	return users, err
+func (ur *UserRepository) FindAll(user *[]models.User) error {
+	return ur.db.Find(user).Error
 }
 
-func (ur *UserRepository) FindUserByID(ID uint) (*models.User, error) {
-	var user models.User
-	err := ur.db.First(&user, ID).Error
-	return &user, err
+func (ur *UserRepository) FindUserByID(user *models.User) error {
+	return ur.db.First(user).Error
 }
 
-func (ur *UserRepository) UpdateUser(user *models.User) error {
-	return ur.db.Model(user).Omit("password").Updates(user).Error
+func (ur *UserRepository) UpdateUser(user *models.User, userDataToUpdate *models.User) error {
+	return ur.db.Model(user).Updates(userDataToUpdate).Error
 }
 
 func (ur *UserRepository) DeleteUser(user *models.User) error {
