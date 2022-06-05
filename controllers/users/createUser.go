@@ -24,11 +24,18 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
+	if user.Password, err = user.HashPassword(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	userRepository := repository.NewUserRepository(db)
 	if err := userRepository.CreateUser(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	user.Password = ""
 
 	c.JSON(http.StatusCreated, user)
 }
