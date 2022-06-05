@@ -8,8 +8,8 @@ import (
 type User struct {
 	gorm.Model
 	Name     string `json:"name" binding:"required,notblank"`
-	Email    string `json:"email,notblank"`
-	Password string `json:"password,notblank,omitempty"`
+	Email    string `json:"email" binding:"required,notblank,email"`
+	Password string `json:"password,omitempty" binding:"required,notblank"`
 }
 
 func (u *User) HashPassword() (string, error) {
