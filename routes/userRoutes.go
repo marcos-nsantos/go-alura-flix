@@ -10,5 +10,6 @@ func addUserRoutes(rg *gin.RouterGroup) {
 	rg.GET("/", usersController.ShowAllUsers)
 	rg.GET("/:id", usersController.ShowUser)
 	rg.PUT("/:id", usersController.UpdateUser)
+	rg.PATCH("/:id", usersController.UpdateUserPassword)
 	rg.DELETE("/:id", usersController.DeleteUser)
 }
