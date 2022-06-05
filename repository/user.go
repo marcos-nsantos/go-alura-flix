@@ -29,6 +29,10 @@ func (ur *UserRepository) UpdateUser(user *models.User, userDataToUpdate *models
 	return ur.db.Model(user).Updates(userDataToUpdate).Error
 }
 
+func (ur *UserRepository) UpdateUserPassword(userID uint, password string) error {
+	return ur.db.Model(&models.User{}).Where("id = ?", userID).Update("password", password).Error
+}
+
 func (ur *UserRepository) DeleteUser(user *models.User) error {
 	return ur.db.Delete(user).Error
 }
