@@ -5,7 +5,6 @@ import (
 	"github.com/marcos-nsantos/alura-flix/database"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
-	"github.com/marcos-nsantos/alura-flix/utils"
 	"net/http"
 )
 
@@ -16,19 +15,12 @@ func ShowAllUsers(c *gin.Context) {
 		return
 	}
 
-	var users *[]models.User
-	usersWithPagination := utils.GeneratePagination(c, &users)
-
+	var users []models.User
 	userRepository := repository.NewUserRepository(db)
-	users, err = userRepository.FindAll(usersWithPagination)
-	if err != nil {
+	if err = userRepository.FindAll(&users); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	for _, user := range *users {
-		user.Password = ""
-	}
-
-	c.JSON(http.StatusOK, usersWithPagination)
+	c.JSON(http.StatusOK, users)
 }

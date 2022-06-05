@@ -3,6 +3,7 @@ package usersController
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/marcos-nsantos/alura-flix/database"
+	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
 	"net/http"
 	"strconv"
@@ -22,9 +23,11 @@ func ShowUser(c *gin.Context) {
 		return
 	}
 
+	var user models.User
+	user.ID = uint(IDUint)
+
 	userRepository := repository.NewUserRepository(db)
-	user, err := userRepository.FindUserByID(uint(IDUint))
-	if err != nil {
+	if err := userRepository.FindUserByID(&user); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}

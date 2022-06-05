@@ -27,7 +27,7 @@ func DeleteUser(c *gin.Context) {
 	user.ID = uint(userIDUint)
 
 	userRepository := repository.NewUserRepository(db)
-	if _, err := userRepository.FindUserByID(user.ID); err != nil {
+	if err := userRepository.FindUserByID(&user); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}

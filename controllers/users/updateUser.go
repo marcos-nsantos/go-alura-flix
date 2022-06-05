@@ -3,6 +3,7 @@ package usersController
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/marcos-nsantos/alura-flix/database"
+	"github.com/marcos-nsantos/alura-flix/dto"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
 	"github.com/marcos-nsantos/alura-flix/utils"
@@ -18,8 +19,8 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var userDataToUpdate models.UpdateUser
+	if err := c.BindJSON(&userDataToUpdate); err != nil {
 		errValidationMessagesResponse := utils.GetErrValidationMessageResponse(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": errValidationMessagesResponse})
 		return
@@ -31,19 +32,19 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
+	var user models.User
 	user.ID = uint(userIDUint)
 	userRepository := repository.NewUserRepository(db)
-	if _, err := userRepository.FindUserByID(user.ID); err != nil {
+	if err := userRepository.FindUserByID(&user); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	err = userRepository.UpdateUser(&user)
-	if err != nil {
+	userWithDataToUpdated := dto.UpdateUserToUser(&userDataToUpdate)
+	if err := userRepository.UpdateUser(&user, userWithDataToUpdated); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	user.Password = ""
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
