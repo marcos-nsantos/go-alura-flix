@@ -24,3 +24,9 @@ func (ur *UserRepository) FindAll(pagination *models.Pagination) (*[]models.User
 	err := queryBuilder.Count(&pagination.TotalRows).Offset(offset).Limit(pagination.Limit).Find(&users).Error
 	return users, err
 }
+
+func (ur *UserRepository) FindUserByID(ID uint) (*models.User, error) {
+	var user models.User
+	err := ur.db.First(&user, ID).Error
+	return &user, err
+}
