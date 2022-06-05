@@ -7,6 +7,9 @@ import (
 func HandleRequests() *gin.Engine {
 	r := gin.Default()
 
+	users := r.Group("/users")
+	addUserRoutes(users)
+
 	video := r.Group("/videos")
 	addVideoRoutes(video)
 
