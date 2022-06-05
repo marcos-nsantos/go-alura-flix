@@ -34,3 +34,7 @@ func (ur *UserRepository) FindUserByID(ID uint) (*models.User, error) {
 func (ur *UserRepository) UpdateUser(user *models.User) error {
 	return ur.db.Model(user).Omit("password").Updates(user).Error
 }
+
+func (ur *UserRepository) DeleteUser(user *models.User) error {
+	return ur.db.Delete(user).Error
+}
