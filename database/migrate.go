@@ -20,4 +20,8 @@ func Migrate() {
 	if err != nil {
 		log.Panic("Erro ao criar tabela de categorias: ", err)
 	}
+
+	if err := db.AutoMigrate(models.User{}); err != nil {
+		log.Panic("Erro ao criar tabela de usuários: ", err)
+	}
 }
