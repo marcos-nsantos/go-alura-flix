@@ -38,3 +38,9 @@ func (ur *UserRepository) UpdateUserPassword(userID uint, password string) error
 func (ur *UserRepository) DeleteUser(user *models.User) error {
 	return ur.db.Delete(user).Error
 }
+
+func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+	user := &models.User{}
+	err := ur.db.Where("email = ?", email).First(user).Error
+	return user, err
+}
