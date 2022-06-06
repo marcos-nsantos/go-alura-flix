@@ -5,7 +5,6 @@ import (
 	"github.com/marcos-nsantos/alura-flix/database"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
-	"github.com/marcos-nsantos/alura-flix/utils"
 	"net/http"
 )
 
@@ -16,14 +15,13 @@ func ShowAllCategorias(c *gin.Context) {
 		return
 	}
 
-	var categorias *[]models.Categoria
-	categoriasWithPagination := utils.GeneratePagination(c, &categorias)
+	var categorias []models.Categoria
 
 	categoriaRepository := repository.NewCategoriaRepository(db)
-	if categorias, err = categoriaRepository.FindAll(categoriasWithPagination); err != nil {
+	if err = categoriaRepository.FindAll(&categorias); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, categoriasWithPagination)
+	c.JSON(http.StatusOK, categorias)
 }

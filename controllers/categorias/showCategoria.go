@@ -3,6 +3,7 @@ package categoriaControllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/marcos-nsantos/alura-flix/database"
+	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
 	"net/http"
 	"strconv"
@@ -22,9 +23,11 @@ func ShowCategoria(c *gin.Context) {
 		return
 	}
 
+	var categoria models.Categoria
+	categoria.ID = uint(IDUint)
+
 	categoriaRepository := repository.NewCategoriaRepository(db)
-	categoria, err := categoriaRepository.FindByID(uint(IDUint))
-	if err != nil {
+	if err := categoriaRepository.FindByID(&categoria); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Categoria não encontrada"})
 		return
 	}

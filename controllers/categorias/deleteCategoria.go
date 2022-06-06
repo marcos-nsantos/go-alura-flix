@@ -27,7 +27,7 @@ func DeleteCategoria(c *gin.Context) {
 	categoria.ID = uint(IDUint)
 
 	categoriaRepository := repository.NewCategoriaRepository(db)
-	if _, err := categoriaRepository.FindByID(categoria.ID); err != nil {
+	if err := categoriaRepository.FindByID(&categoria); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"erro": "Categoria não encontrada"})
 		return
 	}
