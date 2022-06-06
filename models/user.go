@@ -35,6 +35,11 @@ type UpdatePassword struct {
 	Password string `json:"password" binding:"required,notblank"`
 }
 
+type LoginUser struct {
+	Email    string `json:"email" binding:"required,notblank,email"`
+	Password string `json:"password" binding:"required,notblank"`
+}
+
 func (uc *UserCreation) HashPassword() (string, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(uc.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -49,6 +54,10 @@ func (up *UpdatePassword) HashPassword() (string, error) {
 		return "", err
 	}
 	return string(passwordHash), nil
+}
+
+func (u *User) ComparePassword(password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 }
 
 func HashUserPassword(password Password) (string, error) {
