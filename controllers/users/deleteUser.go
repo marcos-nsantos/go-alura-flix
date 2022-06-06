@@ -9,6 +9,18 @@ import (
 	"strconv"
 )
 
+// DeleteUser godoc
+// @Summary Delete user
+// @Description Delete user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path string true "User ID"
+// @Success 200 {string} string "User deleted successfully"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	userID := c.Param("id")
 	userIDUint, err := strconv.ParseUint(userID, 10, 64)

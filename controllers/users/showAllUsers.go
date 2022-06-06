@@ -9,6 +9,20 @@ import (
 	"net/http"
 )
 
+// ShowAllUsers godoc
+// @Summary Show all users
+// @Description Show all users
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param page query int false "Page"
+// @Param limit query int false "Limit"
+// @Param sort query string false "Sort"
+// @Success 200 {object} models.User
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /users [get]
 func ShowAllUsers(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {

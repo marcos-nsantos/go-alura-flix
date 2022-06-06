@@ -9,6 +9,18 @@ import (
 	"strconv"
 )
 
+// DeleteCategoria godoc
+// @Summary Delete categoria
+// @Description Delete categoria
+// @Tags categorias
+// @Accept  json
+// @Produce  json
+// @Param id path string true "ID"
+// @Success 200 {string} string "OK"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /categorias/{id} [delete]
 func DeleteCategoria(c *gin.Context) {
 	IDCategoria := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDCategoria, 10, 64)

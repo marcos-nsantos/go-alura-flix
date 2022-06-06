@@ -13,6 +13,10 @@ func init() {
 }
 
 func main() {
+	// @securityDefinitions.apikey ApiKeyAuth
+	// @in header
+	// @name Authorization
+
 	r := routes.HandleRequests()
 	if err := r.Run(); err != nil {
 		log.Fatal(err)

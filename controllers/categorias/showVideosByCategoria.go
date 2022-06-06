@@ -10,6 +10,20 @@ import (
 	"strconv"
 )
 
+// ShowVideosByCategoria godoc
+// @Summary Lista todas as categorias
+// @Description Lista todas as categorias
+// @Tags categorias
+// @Accept  json
+// @Produce  json
+// @Param page query int false "Page"
+// @Param limit query int false "Limit"
+// @Param sort query string false "Sort"
+// @Success 200 {array} models.Video "OK"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /categorias [get]
 func ShowVideosByCategoria(c *gin.Context) {
 	IDCategoria := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDCategoria, 10, 64)

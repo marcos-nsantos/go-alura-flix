@@ -11,6 +11,19 @@ import (
 	"strconv"
 )
 
+// UpdateCategoria godoc
+// @Summary Update a categoria
+// @Description Update a categoria
+// @Tags categorias
+// @Accept  json
+// @Produce  json
+// @Param id path string true "ID da categoria"
+// @Param categoria body dto.CategoriaDTO true "Dados da categoria"
+// @Success 200 {object} models.Categoria "OK"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /categorias/{id} [put]
 func UpdateCategoria(c *gin.Context) {
 	IDCategoria := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDCategoria, 10, 64)

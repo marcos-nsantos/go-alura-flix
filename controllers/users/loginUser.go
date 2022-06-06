@@ -10,6 +10,17 @@ import (
 	"net/http"
 )
 
+// LoginUser godoc
+// @Summary Login user
+// @Description Login user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param loginUser body models.LoginUser true "Login user"
+// @Success 200 {object} models.User
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Router /users/login [post]
 func LoginUser(c *gin.Context) {
 	var loginUser models.LoginUser
 	if err := c.BindJSON(&loginUser); err != nil {

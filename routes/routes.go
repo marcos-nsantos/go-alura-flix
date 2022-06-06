@@ -3,11 +3,19 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	videoControllers "github.com/marcos-nsantos/alura-flix/controllers/videos"
+	"github.com/marcos-nsantos/alura-flix/docs"
 	"github.com/marcos-nsantos/alura-flix/middlewares"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func HandleRequests() *gin.Engine {
 	r := gin.Default()
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Title = "Alura Flix"
+	docs.SwaggerInfo.Description = "API desenvolvida para o challenge de back-end da Alura"
 
 	signInAndSignOutRoutes := r.Group("/")
 	addSignInAndSignOutRoutes(signInAndSignOutRoutes)

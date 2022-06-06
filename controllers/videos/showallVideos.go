@@ -9,6 +9,20 @@ import (
 	"net/http"
 )
 
+// ShowAllVideos godoc
+// @Summary Show all videos
+// @Description Show all videos
+// @Tags videos
+// @Accept  json
+// @Produce  json
+// @Param page query int false "Page"
+// @Param limit query int false "Limit"
+// @Param sort query string false "Sort"
+// @Success 200 {array} models.Video
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /videos [get]
 func ShowAllVideos(c *gin.Context) {
 	search := c.Query("search")
 

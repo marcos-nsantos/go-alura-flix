@@ -11,6 +11,19 @@ import (
 	"strconv"
 )
 
+// UpdateUser godoc
+// @Summary Update user
+// @Description Update user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path uint true "ID"
+// @Param user body models.UpdateUser true "User"
+// @Success 200 {object} models.User
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /users/{id} [put]
 func UpdateUser(c *gin.Context) {
 	userID := c.Param("id")
 	userIDUint, err := strconv.ParseUint(userID, 10, 64)

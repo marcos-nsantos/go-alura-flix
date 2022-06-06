@@ -11,6 +11,19 @@ import (
 	"strconv"
 )
 
+// UpdateVideo godoc
+// @Summary Update a video
+// @Description Update a video
+// @Tags videos
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Video ID"
+// @Param video body dto.VideoDTO true "Video data"
+// @Success 200 {object} models.Video
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /videos/{id} [put]
 func UpdateVideo(c *gin.Context) {
 	IDVideo := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDVideo, 10, 64)

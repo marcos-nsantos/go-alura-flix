@@ -10,6 +10,17 @@ import (
 	"net/http"
 )
 
+// CreateUser godoc
+// @Summary Create user
+// @Description Create user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param user body models.UserCreation true "Create user"
+// @Success 201 {object} models.User
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Router /users [post]
 func CreateUser(c *gin.Context) {
 	var userDataPayload models.UserCreation
 

@@ -9,6 +9,18 @@ import (
 	"strconv"
 )
 
+// DeleteVideo godoc
+// @Summary Delete a video
+// @Description Delete a video
+// @Tags videos
+// @Accept  json
+// @Produce  json
+// @Param id path string true "ID"
+// @Success 200 {string} string "Video deleted successfully"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /videos/{id} [delete]
 func DeleteVideo(c *gin.Context) {
 	IDVideo := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDVideo, 10, 64)

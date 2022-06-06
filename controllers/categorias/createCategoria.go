@@ -9,6 +9,18 @@ import (
 	"net/http"
 )
 
+// CreateCategoria godoc
+// @Summary Create categoria
+// @Description Create categoria
+// @Tags categorias
+// @Accept  json
+// @Produce  json
+// @Param categoria body dto.CategoriaDTO true "Categoria"
+// @Success 201 {object} models.Categoria
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /categorias [post]
 func CreateCategoria(c *gin.Context) {
 	var categoriaToCreate dto.CategoriaDTO
 

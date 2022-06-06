@@ -9,6 +9,18 @@ import (
 	"strconv"
 )
 
+// ShowVideo
+// @Summary Show video
+// @Description Show video
+// @Tags videos
+// @Accept  json
+// @Produce  json
+// @Param id path string true "ID"
+// @Success 200 {object} models.Video
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /videos/{id} [get]
 func ShowVideo(c *gin.Context) {
 	IDVideo := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDVideo, 10, 64)

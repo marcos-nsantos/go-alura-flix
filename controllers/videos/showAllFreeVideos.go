@@ -8,6 +8,16 @@ import (
 	"net/http"
 )
 
+// ShowAllFreeVideos godoc
+// @Summary Show all free videos
+// @Description Show all free videos
+// @Tags videos
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.Video
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Router /videos/free [get]
 func ShowAllFreeVideos(c *gin.Context) {
 	db, err := database.Connect()
 	if err != nil {

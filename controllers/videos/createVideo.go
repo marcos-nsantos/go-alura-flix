@@ -9,6 +9,20 @@ import (
 	"net/http"
 )
 
+// jwt
+
+// CreateVideo godoc
+// @Summary Create a video
+// @Description Create a video
+// @Tags videos
+// @Accept  json
+// @Produce  json
+// @Param video body dto.VideoDTO true "Video"
+// @Success 201 {object} dto.VideoDTO
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /videos [post]
 func CreateVideo(c *gin.Context) {
 	var videoToCreate dto.VideoDTO
 

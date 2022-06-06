@@ -9,6 +9,17 @@ import (
 	"strconv"
 )
 
+// ShowCategoria godoc
+// @Summary Lista todas as categorias
+// @Description Lista todas as categorias
+// @Tags categorias
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.Categoria "OK"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Security ApiKeyAuth
+// @Router /categorias [get]
 func ShowCategoria(c *gin.Context) {
 	IDCategoria := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDCategoria, 10, 64)
