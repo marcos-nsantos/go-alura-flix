@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func GeneratePagination(c *gin.Context, model interface{}) *models.Pagination {
+func GeneratePagination[T models.Models](c *gin.Context) models.Pagination[T] {
 	limit := 5
 	page := 1
 	sort := "created_at asc"
@@ -22,10 +22,9 @@ func GeneratePagination(c *gin.Context, model interface{}) *models.Pagination {
 		sort = query.Get("sort")
 	}
 
-	return &models.Pagination{
-		Page:    page,
-		Limit:   limit,
-		Sort:    sort,
-		Results: model,
+	return models.Pagination[T]{
+		Page:  page,
+		Limit: limit,
+		Sort:  sort,
 	}
 }

@@ -17,8 +17,10 @@ func (vr *VideoRepository) CreateVideo(video *models.Video) error {
 	return vr.db.Create(video).Error
 }
 
-func (vr *VideoRepository) FindAllVideos(videos *[]models.Video) error {
-	return vr.db.Find(videos).Error
+func (vr *VideoRepository) FindAllVideos(pagination *models.Pagination[models.Video]) error {
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuilder := vr.db.Model(&models.Video{}).Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
+	return queryBuilder.Find(&pagination.Results).Count(&pagination.TotalRows).Error
 }
 
 func (vr *VideoRepository) FindVideoByID(video *models.Video) error {
@@ -33,6 +35,8 @@ func (vr *VideoRepository) DeleteVideo(video *models.Video) error {
 	return vr.db.Delete(video).Error
 }
 
-func (vr *VideoRepository) FindAllVideosByTitle(title string, videos *[]models.Video) error {
-	return vr.db.Where("titulo LIKE ?", "%"+title+"%").Find(videos).Error
+func (vr *VideoRepository) FindAllVideosByTitle(title string, pagination *models.Pagination[models.Video]) error {
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuilder := vr.db.Model(&models.Video{}).Where("titulo LIKE ?", "%"+title+"%").Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
+	return queryBuilder.Find(&pagination.Results).Count(&pagination.TotalRows).Error
 }
