@@ -2,19 +2,26 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/marcos-nsantos/alura-flix/middlewares"
 )
 
 func HandleRequests() *gin.Engine {
 	r := gin.Default()
 
+	signInAndSignOutRoutes := r.Group("/")
+	addSignInAndSignOutRoutes(signInAndSignOutRoutes)
+
 	users := r.Group("/users")
+	users.Use(middlewares.Authentication())
 	addUserRoutes(users)
 
-	video := r.Group("/videos")
-	addVideoRoutes(video)
+	videos := r.Group("/videos")
+	videos.Use(middlewares.Authentication())
+	addVideoRoutes(videos)
 
-	categoria := r.Group("/categorias")
-	addCategoriaRoutes(categoria)
+	categorias := r.Group("/categorias")
+	categorias.Use(middlewares.Authentication())
+	addCategoriaRoutes(categorias)
 
 	return r
 }
