@@ -17,8 +17,10 @@ func (ur *UserRepository) CreateUser(user *models.User) error {
 	return ur.db.Create(user).Error
 }
 
-func (ur *UserRepository) FindAll(user *[]models.User) error {
-	return ur.db.Find(user).Error
+func (ur *UserRepository) FindAll(pagination *models.Pagination[models.User]) error {
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuilder := ur.db.Model(&models.User{}).Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
+	return queryBuilder.Find(&pagination.Results).Count(&pagination.TotalRows).Error
 }
 
 func (ur *UserRepository) FindUserByID(user *models.User) error {
