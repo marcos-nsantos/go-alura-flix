@@ -40,3 +40,7 @@ func (vr *VideoRepository) FindAllVideosByTitle(title string, pagination *models
 	queryBuilder := vr.db.Model(&models.Video{}).Where("titulo LIKE ?", "%"+title+"%").Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
 	return queryBuilder.Find(&pagination.Results).Count(&pagination.TotalRows).Error
 }
+
+func (vr *VideoRepository) FirstThreeVideos(video *[]models.Video) error {
+	return vr.db.Limit(3).Find(video).Error
+}
