@@ -3,6 +3,7 @@ package videoControllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/marcos-nsantos/alura-flix/database"
+	"github.com/marcos-nsantos/alura-flix/dto"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
 	"github.com/marcos-nsantos/alura-flix/utils"
@@ -14,12 +15,12 @@ func UpdateVideo(c *gin.Context) {
 	IDVideo := c.Param("id")
 	IDUint, err := strconv.ParseUint(IDVideo, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
 		return
 	}
 
-	var video models.Video
-	if err := c.ShouldBindJSON(&video); err != nil {
+	var videoToUpdate dto.VideoDTO
+	if err := c.ShouldBindJSON(&videoToUpdate); err != nil {
 		errValidationMessagesResponse := utils.GetErrValidationMessageResponse(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": errValidationMessagesResponse})
 		return
@@ -31,15 +32,17 @@ func UpdateVideo(c *gin.Context) {
 		return
 	}
 
+	var video models.Video
 	video.ID = uint(IDUint)
+
 	videoRepository := repository.NewVideoRepository(db)
-	if _, err := videoRepository.FindVideoByID(video.ID); err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Video not found"})
+	if err := videoRepository.FindVideoByID(&video); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "video not found"})
 		return
 	}
 
-	err = videoRepository.UpdateVideo(&video)
-	if err != nil {
+	videoWithDataToUpdated := videoToUpdate.ToVideo()
+	if err := videoRepository.UpdateVideo(&video, videoWithDataToUpdated); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

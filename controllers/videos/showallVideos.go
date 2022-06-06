@@ -5,7 +5,6 @@ import (
 	"github.com/marcos-nsantos/alura-flix/database"
 	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
-	"github.com/marcos-nsantos/alura-flix/utils"
 	"net/http"
 )
 
@@ -18,22 +17,20 @@ func ShowAllVideos(c *gin.Context) {
 		return
 	}
 
-	var videos *[]models.Video
-	videosWithPagination := utils.GeneratePagination(c, &videos)
-
+	var videos []models.Video
 	videoRepository := repository.NewVideoRepository(db)
 
 	if search != "" {
-		if videos, err = videoRepository.FindAllVideosByTitle(search, videosWithPagination); err != nil {
+		if err = videoRepository.FindAllVideosByTitle(search, &videos); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 	} else {
-		if videos, err = videoRepository.FindAllVideos(videosWithPagination); err != nil {
+		if err = videoRepository.FindAllVideos(&videos); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 	}
 
-	c.JSON(http.StatusOK, videosWithPagination)
+	c.JSON(http.StatusOK, videos)
 }

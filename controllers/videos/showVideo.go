@@ -3,6 +3,7 @@ package videoControllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/marcos-nsantos/alura-flix/database"
+	"github.com/marcos-nsantos/alura-flix/models"
 	"github.com/marcos-nsantos/alura-flix/repository"
 	"net/http"
 	"strconv"
@@ -22,10 +23,12 @@ func ShowVideo(c *gin.Context) {
 		return
 	}
 
+	var video models.Video
+	video.ID = uint(IDUint)
+
 	videoRepository := repository.NewVideoRepository(db)
-	video, err := videoRepository.FindVideoByID(uint(IDUint))
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Video not found"})
+	if err := videoRepository.FindVideoByID(&video); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "video not found"})
 		return
 	}
 
